@@ -1,7 +1,7 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HelmetProvider } from 'react-helmet-async';
-import { useEffect } from 'react';
 
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -9,49 +9,54 @@ import Events from './pages/Events';
 import PostEvent from './pages/PostEvent';
 import About from './pages/About';
 
-function Page({ children }) {
+// Grain overlay — rendered once at the top level
+function GrainOverlay() {
+  return <div className="grain-overlay" aria-hidden="true" />;
+}
+
+// Page transition wrapper
+function PageWrapper({ children }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
   );
 }
 
-function ScrollReset() {
-  const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
-  return null;
-}
-
-function AppRoutes() {
+// Animated routes
+function AnimatedRoutes() {
   const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
   return (
-    <>
-      <ScrollReset />
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Page><Home /></Page>} />
-          <Route path="/events" element={<Page><Events /></Page>} />
-          <Route path="/post-event" element={<Page><PostEvent /></Page>} />
-          <Route path="/about" element={<Page><About /></Page>} />
-          <Route path="*" element={
-            <Page>
-              <div className="min-h-screen flex flex-col items-center justify-center text-center px-5 pt-20">
-                <p className="font-heading text-[#1F1F1F]" style={{ fontSize: '8rem', lineHeight: 1 }}>404</p>
-                <h1 className="font-sub font-semibold text-[#FAFAFA] text-xl mb-3">Page not found</h1>
-                <p className="text-[#555] text-sm font-sub mb-8">This page doesn't exist in our universe.</p>
-                <a href="/" className="btn-primary">Back to home</a>
-              </div>
-            </Page>
-          } />
-        </Routes>
-      </AnimatePresence>
-    </>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+        <Route path="/events" element={<PageWrapper><Events /></PageWrapper>} />
+        <Route path="/post-event" element={<PageWrapper><PostEvent /></PageWrapper>} />
+        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+        {/* 404 fallback */}
+        <Route path="*" element={
+          <PageWrapper>
+            <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
+              <div className="text-7xl mb-6">🌌</div>
+              <h1 className="font-heading text-white text-5xl mb-4" style={{ letterSpacing: '-0.03em' }}>404</h1>
+              <p className="p-lg text-white/50 mb-8">This page doesn't exist in our universe.</p>
+              <a href="/" className="btn-primary">Take me home</a>
+            </div>
+          </PageWrapper>
+        } />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
@@ -59,8 +64,9 @@ export default function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <GrainOverlay />
         <Navbar />
-        <AppRoutes />
+        <AnimatedRoutes />
       </BrowserRouter>
     </HelmetProvider>
   );

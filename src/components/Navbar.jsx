@@ -1,113 +1,150 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const NAV_LINKS = [
-  { label: 'Discover', href: '/events' },
-  { label: 'Host', href: '/post-event' },
-  { label: 'About', href: '/about' },
-];
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', fn, { passive: true });
-    return () => window.removeEventListener('scroll', fn);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => { setOpen(false); }, [location]);
-  useEffect(() => { document.body.style.overflow = open ? 'hidden' : ''; }, [open]);
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
 
   return (
     <>
-      <motion.header
-        initial={{ y: -60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'border-b border-[#1F1F1F] bg-[#0A0A0A]/95 backdrop-blur-md' : 'bg-transparent'
-        }`}
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4"
+        style={{ pointerEvents: 'none' }}
       >
-        <div className="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
+        <div
+          className={`relative flex items-center justify-between px-6 py-3.5 rounded-full transition-all duration-500 w-full max-w-4xl pointer-events-auto ${
+            scrolled
+              ? 'glass shadow-card-h'
+              : 'bg-black/20 backdrop-blur-md border border-white/10 shadow-card'
+          }`}
+        >
+          {/* Subtle glow when scrolled */}
+          {scrolled && (
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet/20 via-transparent to-violet/20 blur-md -z-10" />
+          )}
+
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center shrink-0">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-light to-violet flex items-center justify-center group-hover:shadow-gv-sm transition-all duration-300">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="3" fill="white"/>
-                <path d="M12 3C12 3 19 7 19 12C19 17 12 21 12 21" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                <path d="M12 3C12 3 5 7 5 12C5 17 12 21 12 21" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M12 2C12 2 20 7 20 12C20 17 12 22 12 22" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M12 2C12 2 4 7 4 12C4 17 12 22 12 22" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5" strokeOpacity="0.4"/>
               </svg>
             </div>
-            <span className="font-sub font-semibold text-[#FAFAFA] text-sm tracking-tight">EventSphere</span>
+            <span className="font-sub font-bold text-white tracking-tight">EventSphere</span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((l) => (
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            {[
+              { name: 'Discover', path: '/events' },
+              { name: 'Host', path: '/post-event' },
+              { name: 'About', path: '/about' },
+            ].map((link) => (
               <Link
-                key={l.href}
-                to={l.href}
-                className={`px-3 py-1.5 rounded-md text-sm font-sub transition-colors duration-150 ${
-                  location.pathname === l.href
-                    ? 'text-[#FAFAFA] bg-[#1F1F1F]'
-                    : 'text-[#888] hover:text-[#FAFAFA]'
+                key={link.name}
+                to={link.path}
+                className={`font-sub text-sm font-medium transition-colors duration-200 ${
+                  location.pathname === link.path ? 'text-white' : 'text-white/60 hover:text-white'
                 }`}
               >
-                {l.label}
+                {link.name}
               </Link>
             ))}
-          </nav>
+          </div>
 
-          {/* CTA */}
-          <div className="flex items-center gap-3">
-            <Link to="/post-event" className="hidden sm:inline-flex btn-primary text-xs py-1.5 px-4">
+          {/* Post CTA (Desktop) */}
+          <div className="hidden md:block">
+            <Link to="/post-event" className="btn-primary py-2 px-5 text-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
               Post Event
             </Link>
-            <button
-              id="mobile-menu-btn"
-              className="md:hidden w-8 h-8 flex flex-col items-center justify-center gap-1.5 cursor-pointer"
-              onClick={() => setOpen(!open)}
-              aria-label="Menu"
-            >
-              <motion.span animate={open ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }} className="block w-4.5 h-px bg-[#888] origin-center" style={{ width: '18px', height: '1.5px' }} />
-              <motion.span animate={open ? { opacity: 0 } : { opacity: 1 }} className="block bg-[#888]" style={{ width: '18px', height: '1.5px' }} />
-              <motion.span animate={open ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }} className="block bg-[#888] origin-center" style={{ width: '18px', height: '1.5px' }} />
-            </button>
           </div>
-        </div>
-      </motion.header>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col items-center justify-center gap-6"
+          {/* Mobile Menu Toggle */}
+          <button
+            className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5 z-50 text-white"
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            {[{ label: 'Home', href: '/' }, ...NAV_LINKS].map((l, i) => (
-              <motion.div
-                key={l.href}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06, duration: 0.35 }}
-              >
-                <Link
-                  to={l.href}
-                  className="font-heading text-4xl text-[#FAFAFA]/80 hover:text-[#FAFAFA] transition-colors"
+            <motion.span
+              animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+              className="block w-6 h-0.5 bg-current transition-transform"
+            />
+            <motion.span
+              animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
+              className="block w-6 h-0.5 bg-current transition-opacity"
+            />
+            <motion.span
+              animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              className="block w-6 h-0.5 bg-current transition-transform"
+            />
+          </button>
+        </div>
+      </motion.nav>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ clipPath: 'circle(0% at top right)' }}
+            animate={{ clipPath: 'circle(150% at top right)' }}
+            exit={{ clipPath: 'circle(0% at top right)' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-40 bg-space/95 backdrop-blur-xl flex flex-col items-center justify-center"
+          >
+            <div className="flex flex-col items-center gap-8 text-center">
+              {[
+                { name: 'Home', path: '/' },
+                { name: 'Discover', path: '/events' },
+                { name: 'Host an Event', path: '/post-event' },
+                { name: 'About', path: '/about' },
+              ].map((link, i) => (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + i * 0.1 }}
                 >
-                  {l.label}
-                </Link>
-              </motion.div>
-            ))}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.28 }}>
-              <Link to="/post-event" className="btn-primary mt-4">Post an Event</Link>
+                  <Link
+                    to={link.path}
+                    className="font-heading text-4xl text-white hover:text-violet-light transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="absolute bottom-12"
+            >
+              <Link to="/post-event" className="btn-primary text-lg px-8 py-4">
+                Post an Event
+              </Link>
             </motion.div>
           </motion.div>
         )}
