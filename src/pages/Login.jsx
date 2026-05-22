@@ -21,7 +21,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center px-4 pt-24 pb-12 relative">
+    <div className="min-h-screen flex items-center justify-center px-4 pt-20 relative">
       <div className="orb orb-violet absolute w-[500px] h-[500px] top-[10%] left-[-10%] opacity-20" />
       <div className="orb orb-purple absolute w-[400px] h-[400px] bottom-[10%] right-[-5%] opacity-20" />
 
