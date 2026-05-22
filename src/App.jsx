@@ -8,7 +8,10 @@ import Home from './pages/Home';
 import Events from './pages/Events';
 import PostEvent from './pages/PostEvent';
 import About from './pages/About';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import { EventModalProvider } from './context/EventModalContext';
+import { AuthProvider } from './context/AuthContext';
 import SmokeBackground from './components/SmokeBackground';
 
 // Grain overlay — rendered once at the top level
@@ -46,6 +49,8 @@ function AnimatedRoutes() {
         <Route path="/events" element={<PageWrapper><Events /></PageWrapper>} />
         <Route path="/post-event" element={<PageWrapper><PostEvent /></PageWrapper>} />
         <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+        <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+        <Route path="/signup" element={<PageWrapper><Signup /></PageWrapper>} />
         {/* 404 fallback */}
         <Route path="*" element={
           <PageWrapper>
@@ -66,12 +71,14 @@ export default function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
-        <EventModalProvider>
-          <SmokeBackground />
-          <GrainOverlay />
-          <Navbar />
-          <AnimatedRoutes />
-        </EventModalProvider>
+        <AuthProvider>
+          <EventModalProvider>
+            <SmokeBackground />
+            <GrainOverlay />
+            <Navbar />
+            <AnimatedRoutes />
+          </EventModalProvider>
+        </AuthProvider>
       </BrowserRouter>
     </HelmetProvider>
   );

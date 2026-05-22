@@ -50,7 +50,8 @@ function MarqueeRow({ items, reverse = false }) {
   return (
     <div className="marquee-container py-4">
       <div
-        className={`marquee-track ${reverse ? 'animate-marquee-rev' : 'animate-marquee'}`}
+        className="marquee-track animate-marquee"
+        style={{ animationDirection: reverse ? 'reverse' : 'normal' }}
       >
         {doubled.map((item, i) => (
           <TestimonialCard key={`${item.name}-${i}`} testimonial={item} />

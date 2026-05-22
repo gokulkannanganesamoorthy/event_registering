@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { currentUser, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,14 +74,31 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Post CTA (Desktop) */}
-          <div className="hidden md:block">
-            <Link to="/post-event" className="btn-primary py-2 px-5 text-sm">
+          {/* Right side CTA & Auth (Desktop) */}
+          <div className="hidden md:flex items-center gap-4">
+            <Link to="/post-event" className="btn-primary py-2 px-4 text-sm">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
               Post Event
             </Link>
+            
+            <div className="w-px h-6 bg-white/10" />
+
+            {currentUser ? (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet to-purple-600 flex items-center justify-center text-white text-xs font-bold font-sub shadow-gv-sm border border-white/10">
+                  {currentUser.name.charAt(0).toUpperCase()}
+                </div>
+                <button onClick={logout} className="text-white/60 hover:text-white font-sub text-sm transition-colors">
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link to="/login" className="text-white/80 hover:text-white font-sub text-sm font-medium transition-colors">
+                Sign In
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}

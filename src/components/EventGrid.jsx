@@ -3,15 +3,34 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import EventCard from './EventCard';
 import { MOCK_EVENTS } from '../data/mockEvents';
+import { useAuth } from '../context/AuthContext';
 
 const CATEGORIES = ['All', 'Music', 'Tech', 'Art', 'Food', 'Wellness', 'Networking'];
 
 export default function EventGrid() {
   const [activeCategory, setActiveCategory] = useState('All');
+  
+  // Try to use auth, handle if provider isn't wrapping yet
+  let currentUser = null;
+  try {
+    const auth = useAuth();
+    currentUser = auth?.currentUser;
+  } catch (e) {}
 
   const filteredEvents = activeCategory === 'All' 
     ? MOCK_EVENTS 
     : MOCK_EVENTS.filter(e => e.category === activeCategory);
+
+  // Calculate Recommendations
+  let recommendedEvents = [];
+  if (currentUser?.activityProfile && Object.keys(currentUser.activityProfile).length > 0) {
+    const profile = currentUser.activityProfile;
+    const topCategories = Object.keys(profile)
+      .sort((a, b) => profile[b] - profile[a])
+      .slice(0, 2);
+      
+    recommendedEvents = MOCK_EVENTS.filter(e => topCategories.includes(e.category)).slice(0, 4);
+  }
 
   return (
     <section className="relative py-24 px-4 overflow-hidden">
@@ -20,6 +39,34 @@ export default function EventGrid() {
 
       <div className="relative z-10 max-w-7xl mx-auto">
         
+        {/* Recommended For You Section */}
+        {recommendedEvents.length > 0 && activeCategory === 'All' && (
+          <div className="mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-2 h-2 rounded-full bg-gold animate-pulse-glow" />
+                <p className="label text-gold/80">Personalized</p>
+              </div>
+              <h2 className="font-heading text-white text-4xl">Recommended for You</h2>
+            </motion.div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {recommendedEvents.map((event, index) => (
+                <div key={`rec-${event.id}`}>
+                  <EventCard event={event} index={index} />
+                </div>
+              ))}
+            </div>
+            
+            <div className="section-divider mt-16" />
+          </div>
+        )}
+
         {/* Header section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <motion.div

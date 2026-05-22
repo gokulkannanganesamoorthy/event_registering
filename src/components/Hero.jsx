@@ -40,16 +40,16 @@ export default function Hero() {
 
   return (
     <section ref={containerRef} className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden pt-20 pb-10">
-      
+
       {/* Background layer with Parallax */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 z-0 pointer-events-none"
         style={{ y, opacity, scale }}
       >
         <div className="absolute inset-0 bg-space/60 mix-blend-multiply z-10" />
-        <img 
-          src="/hero-bg.png" 
-          alt="Abstract energetic background" 
+        <img
+          src="/hero-bg.png"
+          alt="Abstract energetic background"
           className="w-full h-full object-cover object-center opacity-80"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-space via-space/50 to-transparent z-20" />
@@ -61,7 +61,7 @@ export default function Hero() {
 
       {/* Main Content */}
       <div className="relative z-30 w-full max-w-5xl mx-auto px-4 flex flex-col items-center text-center mt-12">
-        
+
         {/* Animated Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -79,12 +79,12 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="font-heading text-white mb-6 leading-none"
-          style={{ 
+          style={{
             fontSize: 'clamp(3rem, 8vw, 7.5rem)',
             letterSpacing: '-0.02em'
           }}
         >
-          Where Moments <br/>
+          Where Moments <br />
           <span className="text-gradient italic">Become Movements</span>
         </motion.h1>
 
@@ -109,12 +109,12 @@ export default function Hero() {
           <div className="flex-1 flex items-center w-full">
             <div className="pl-5 shrink-0 text-white/40 group-focus-within:text-violet-light transition-colors">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
               </svg>
             </div>
-            <input 
-              type="text" 
-              placeholder="Search events, artists, experiences..." 
+            <input
+              type="text"
+              placeholder="Search events, artists, experiences..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full bg-transparent border-none outline-none text-white placeholder:text-white/30 px-4 py-3.5 font-sub text-base"
@@ -126,18 +126,18 @@ export default function Hero() {
 
           {/* City Selector */}
           <div id="city-selector" className="relative w-full sm:w-auto shrink-0">
-            <button 
+            <button
               onClick={() => setShowCityDropdown(!showCityDropdown)}
               className="w-full flex items-center justify-between sm:justify-start gap-2 px-5 py-3.5 text-white/80 hover:text-white font-sub text-sm transition-colors"
             >
               <div className="flex items-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
                 </svg>
                 {city}
               </div>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="m6 9 6 6 6-6"/>
+                <path d="m6 9 6 6 6-6" />
               </svg>
             </button>
 
@@ -155,9 +155,8 @@ export default function Hero() {
                     <button
                       key={c}
                       onClick={() => { setCity(c); setShowCityDropdown(false); }}
-                      className={`w-full text-left px-5 py-2.5 text-sm font-sub transition-colors ${
-                        c === city ? 'text-violet-light bg-white/5' : 'text-white/70 hover:text-white hover:bg-white/10'
-                      }`}
+                      className={`w-full text-left px-5 py-2.5 text-sm font-sub transition-colors ${c === city ? 'text-violet-light bg-white/5' : 'text-white/70 hover:text-white hover:bg-white/10'
+                        }`}
                     >
                       {c}
                     </button>
@@ -168,7 +167,7 @@ export default function Hero() {
           </div>
 
           {/* Search Button */}
-          <Link 
+          <Link
             to={`/events?q=${query}&city=${city}`}
             className="w-full sm:w-auto shrink-0 bg-gradient-to-r from-violet to-violet-light text-white px-8 py-3.5 rounded-full font-sub font-semibold text-sm shadow-gv hover:shadow-gv-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-center"
           >
@@ -185,8 +184,8 @@ export default function Hero() {
         >
           <span className="text-white/40 text-xs font-sub uppercase tracking-wider mr-2">Trending:</span>
           {['Music 🎵', 'Tech Summit 💻', 'Art Fair 🎨', 'Food Festival 🍜'].map(tag => (
-            <Link 
-              key={tag} 
+            <Link
+              key={tag}
               to={`/events?q=${tag.split(' ')[0]}`}
               className="glass px-4 py-1.5 rounded-full text-xs font-sub text-white/70 hover:text-white hover:bg-white/10 transition-colors border border-white/5"
             >
@@ -198,15 +197,14 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="mt-auto mb-8 hidden sm:flex flex-col items-center gap-2 relative z-30"
       >
-        <span className="label text-white/30 text-[10px]">Scroll to explore</span>
         <div className="w-5 h-8 glass rounded-full flex justify-center p-1 border border-white/10">
-          <motion.div 
+          <motion.div
             animate={{ y: [0, 12, 0], opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-1 h-2 bg-violet-light rounded-full"

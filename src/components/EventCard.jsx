@@ -64,10 +64,12 @@ export default function EventCard({ event, index = 0 }) {
           
           <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
           
-          {/* Event emoji/icon fallback */}
-          <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-50 transform group-hover:scale-110 transition-transform duration-700 ease-out">
-            {event.emoji || '🎪'}
-          </div>
+          {/* Event Photo */}
+          <img 
+            src={`https://picsum.photos/seed/${event.id}/800/600`}
+            alt={event.title}
+            className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay transform group-hover:scale-110 transition-transform duration-700 ease-out"
+          />
 
           {/* Top badges */}
           <div className="absolute top-4 left-4 flex gap-2">
