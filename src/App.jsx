@@ -9,6 +9,7 @@ import Events from './pages/Events';
 import PostEvent from './pages/PostEvent';
 import About from './pages/About';
 import { EventModalProvider } from './context/EventModalContext';
+import SmokeBackground from './components/SmokeBackground';
 
 // Grain overlay — rendered once at the top level
 function GrainOverlay() {
@@ -66,6 +67,7 @@ export default function App() {
     <HelmetProvider>
       <BrowserRouter>
         <EventModalProvider>
+          <SmokeBackground />
           <GrainOverlay />
           <Navbar />
           <AnimatedRoutes />
