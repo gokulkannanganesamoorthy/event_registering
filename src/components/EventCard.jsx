@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useEventModal } from '../context/EventModalContext';
 
 const CATEGORY_GRADIENTS = {
   Music: 'from-violet to-fuchsia-600',
@@ -14,6 +14,7 @@ const CATEGORY_GRADIENTS = {
 
 export default function EventCard({ event, index = 0 }) {
   const cardRef = useRef(null);
+  const { openModal } = useEventModal();
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -48,12 +49,12 @@ export default function EventCard({ event, index = 0 }) {
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="h-full"
     >
-      <Link 
-        to={`/events/${event.id}`}
+      <button 
+        onClick={() => openModal(event)}
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="card-glow block h-full flex flex-col group"
+        className="card-glow w-full text-left block h-full flex flex-col group cursor-pointer"
         style={{ transition: 'transform 0.15s ease-out' }}
       >
         {/* Image / Gradient top */}
@@ -138,7 +139,7 @@ export default function EventCard({ event, index = 0 }) {
           </div>
 
         </div>
-      </Link>
+      </button>
     </motion.div>
   );
 }
